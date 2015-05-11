@@ -12,13 +12,26 @@ exports.load = function(req, res, next, quizId) {
   ).catch(function(error) { next(error);});
 };
 
-// GET /quizes 
+// GET /quizes
 exports.index = function(req, res) {
-  models.Quiz.findAll().then(
-    function(quizes) {
-      res.render('quizes/index', { quizes: quizes});
-    }
-  ).catch(function(error) { next(error);})
+  if (req.query.search === undefined) {
+    // no hay query string
+    models.Quiz.findAll().then(
+      function(quizes) {
+        res.render('quizes/index', { quizes: quizes});
+      }
+    ).catch(function(error) { next(error);})
+  }
+  else {
+    // hay query string
+    var strBuscado = '%'+req.query.search+'%';
+    strBuscado = strBuscado.replace(/\s/g,'%');
+    models.Quiz.findAll({where: ['pregunta like ?', strBuscado]}).then(
+      function(quizes) {
+        res.render('quizes/index', { quizes: quizes});
+      }
+    ).catch(function(error) { next(error);})
+  }
 };
 
 // GET /quizes/:id
