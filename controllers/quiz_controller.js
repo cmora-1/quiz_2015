@@ -26,7 +26,8 @@ exports.index = function(req, res) {
     // hay query string
     var strBuscado = '%'+req.query.search+'%';
     strBuscado = strBuscado.replace(/\s/g,'%');
-    models.Quiz.findAll({where: ['pregunta like ?', strBuscado]}).then(
+    models.Quiz.findAll({where: ['pregunta like ?', strBuscado],
+    			 order: '"pregunta" ASC'}).then(
       function(quizes) {
         res.render('quizes/index', { quizes: quizes});
       }
